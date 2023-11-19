@@ -2,10 +2,15 @@ import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
+import multer from 'multer'
 import OpenAI from 'openai'
 import { encode } from 'gpt-3-encoder'
+import deepgramPkg from '@deepgram/sdk'
 
 const envConfig = dotenv.config()
+const upload = multer()
+const { Deepgram } = deepgramPkg
+const deepgram = new Deepgram(process.env.DG_API)
 
 const port = 3000
 const app = express()
@@ -56,6 +61,24 @@ app.post('/tokenize', async (req, res) => {
     })
   } catch (error) {
     console.log(error.message)
+  }
+})
+
+app.post('/dg-transcription', upload.single('file'), async (req, res) => {
+  try {
+    const dgResponse = await deepgram.transcription.preRecorded(
+      {
+        buffer: req.file.buffer,
+        mimetype: req.file.mimetype
+      },
+      {
+        punctuate: true,
+        model: 'nova'
+      }
+    )
+    res.send({ transcript: dgResponse })
+  } catch (e) {
+    console.log('error', e)
   }
 })
 
