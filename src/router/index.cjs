@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import TextView from '../views/TextView.vue'
 import AudioView from '../views/AudioView.vue'
 import ImageView from '../views/ImageView.vue'
-import { useTokenizeStore } from '../stores/tokenize'
+import { useTokenizeStore } from '../stores/tokenize.cjs'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
