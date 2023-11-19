@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import OpenAI from 'openai'
+import { encode } from 'gpt-3-encoder'
+
 const envConfig = dotenv.config()
 
 const port = 3000
@@ -32,6 +34,25 @@ app.post('/chat', async (req, res) => {
     return res.status(200).json({
       success: true,
       message: completion
+    })
+  } catch (error) {
+    console.log(error.message)
+  }
+})
+
+app.post('/tokenize', async (req, res) => {
+  const str = req.body.stringToTokenize
+
+  try {
+    if (str == null) {
+      throw new Error('No string was provided')
+    }
+    const encoded = encode(str)
+    const length = encoded.length
+    console.log('Token count is ' + length)
+    return res.status(200).json({
+      success: true,
+      tokens: length
     })
   } catch (error) {
     console.log(error.message)
