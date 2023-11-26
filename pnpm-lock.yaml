@@ -44,6 +44,9 @@ dependencies:
   postcss:
     specifier: ^8.4.23
     version: 8.4.31
+  replicate:
+    specifier: ^0.22.0
+    version: 0.22.0
   tailwindcss:
     specifier: ^3.3.2
     version: 3.3.5
@@ -2525,6 +2528,11 @@ packages:
       call-bind: 1.0.5
       define-properties: 1.2.1
       set-function-name: 2.0.1
+    dev: false
+
+  /replicate@0.22.0:
+    resolution: {integrity: sha512-jUfvYCcnnzG0l3NzgNLUBRfv7e5ZcZpBWzxGqx3v8bkvJmY0jK19JRtFtBgJFRBye61ggH1zC9cubGkburF82g==}
+    engines: {git: '>=2.11.0', node: '>=18.0.0', npm: '>=7.19.0', yarn: '>=1.7.0'}
     dev: false
 
   /resolve-from@4.0.0:
