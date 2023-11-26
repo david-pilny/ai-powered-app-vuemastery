@@ -1,6 +1,7 @@
 <script setup>
 import Transcriber from '../components/Transcriber.vue'
 import Uploader from '../components/Uploader.vue'
+import ChatWindowAudio from '../components/ChatWindowAudio.vue'
 </script>
 
 <template>
@@ -16,6 +17,7 @@ import Uploader from '../components/Uploader.vue'
     </div>
     <div class="min-h-80 flex flex-col justify-between">
       <!-- Chat Window -->
+      <ChatWindowAudio />
     </div>
   </article>
 </template>
