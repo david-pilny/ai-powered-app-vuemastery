@@ -6,6 +6,7 @@ import multer from 'multer'
 import OpenAI from 'openai'
 import { encode } from 'gpt-3-encoder'
 import deepgramPkg from '@deepgram/sdk'
+import Replicate from 'replicate'
 
 const envConfig = dotenv.config()
 const upload = multer()
@@ -22,6 +23,10 @@ const configuration = {
 }
 
 const openai = new OpenAI(configuration)
+
+const replicate = new Replicate({
+  auth: process.env.REPLICATE
+})
 
 app.post('/chat', async (req, res) => {
   const messages = req.body.messages
@@ -77,6 +82,24 @@ app.post('/dg-transcription', upload.single('file'), async (req, res) => {
       }
     )
     res.send({ transcript: dgResponse })
+  } catch (e) {
+    console.log('error', e)
+  }
+})
+
+const miniGPT =
+  'daanelson/minigpt-4:b96a2f33cc8e4b0aa23eacfce731b9c41a7d9466d9ed4e167375587b54db9423'
+
+// Replicate (minigpt) image analyzer
+app.post('/minigpt', async (req, res) => {
+  try {
+    const miniGPTResponse = await replicate.run(miniGPT, {
+      input: {
+        image: req.body.image,
+        prompt: req.body.prompt
+      }
+    })
+    res.send({ message: miniGPTResponse })
   } catch (e) {
     console.log('error', e)
   }
