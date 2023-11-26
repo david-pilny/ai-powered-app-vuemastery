@@ -25,6 +25,7 @@ export const useAudioChatStore = defineStore('audioChat', () => {
   }
 
   function createPrompt() {
+    prompt.value = []
     const instructions = {
       role: 'system',
       content:
@@ -42,7 +43,7 @@ export const useAudioChatStore = defineStore('audioChat', () => {
   }
 
   function sendPrompt() {
-    fetch('http://localhost:3000/chat', {
+    fetch('http://localhost:3000/chain', {
       method: 'POST',
       body: JSON.stringify({
         messages: prompt.value
@@ -58,11 +59,31 @@ export const useAudioChatStore = defineStore('audioChat', () => {
         // array to save the conversation
         questionAnswerList.value.push({
           question: question.value,
-          answer: data.message.content
+          answer: data.message
         })
         question.value = ''
       })
   }
 
-  return { file, transcript, prompt, question, questionAnswerList, transcribeFile, createPrompt }
+  function clearChat() {
+    file.value = {}
+    prompt.value = []
+    gptResponse.value = ''
+    transcript.value = ''
+    question.value = ''
+    questionAnswerList.value = []
+    // clear memory in server:
+    fetch('http://localhost:3000/clear-chain').then((response) => response.json())
+  }
+
+  return {
+    file,
+    transcript,
+    prompt,
+    question,
+    questionAnswerList,
+    transcribeFile,
+    createPrompt,
+    clearChat
+  }
 })

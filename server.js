@@ -8,6 +8,11 @@ import { encode } from 'gpt-3-encoder'
 import deepgramPkg from '@deepgram/sdk'
 import Replicate from 'replicate'
 
+import { OpenAI as LangchainOpenAI } from 'langchain/llms/openai'
+// import { PromptTemplate } from 'langchain/prompts'
+import { ConversationChain } from 'langchain/chains'
+import { BufferMemory } from 'langchain/memory'
+
 const envConfig = dotenv.config()
 const upload = multer()
 const { Deepgram } = deepgramPkg
@@ -103,6 +108,45 @@ app.post('/minigpt', async (req, res) => {
   } catch (e) {
     console.log('error', e)
   }
+})
+
+const model = new LangchainOpenAI({})
+const memory = new BufferMemory()
+const chain = new ConversationChain({ llm: model, memory: memory })
+let chainNum = 0
+
+app.post('/chain', async (req, res) => {
+  chainNum++
+  const messages = req.body.messages
+
+  if (chainNum === 1) {
+    const firstResponse = await chain.call({ input: messages[0].content })
+    console.log(firstResponse)
+    const secondResponse = await chain.call({ input: messages[1].content })
+    console.log(secondResponse)
+    const thirdResponse = await chain.call({ input: messages[2].content })
+    console.log(thirdResponse)
+    return res.status(200).json({
+      success: true,
+      message: thirdResponse.response
+    })
+  } else {
+    const nextResponse = await chain.call({ input: messages[2].content })
+    console.log(nextResponse)
+    return res.status(200).json({
+      success: true,
+      message: nextResponse.response
+    })
+  }
+})
+
+app.get('/clear-chain', async (req, res) => {
+  memory.clear()
+  chainNum = 0
+  return res.status(200).json({
+    success: true,
+    message: 'Memory is clear!'
+  })
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

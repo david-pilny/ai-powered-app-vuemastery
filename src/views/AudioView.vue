@@ -2,6 +2,10 @@
 import Transcriber from '../components/Transcriber.vue'
 import Uploader from '../components/Uploader.vue'
 import ChatWindowAudio from '../components/ChatWindowAudio.vue'
+
+import { useAudioChatStore } from '../stores/audioChat.cjs'
+
+const audioChatStore = useAudioChatStore()
 </script>
 
 <template>
@@ -18,6 +22,9 @@ import ChatWindowAudio from '../components/ChatWindowAudio.vue'
     <div class="min-h-80 flex flex-col justify-between">
       <!-- Chat Window -->
       <ChatWindowAudio />
+      <div class="flex justify-end">
+        <button @click="audioChatStore.clearChat()" class="button button-secondary">Clear</button>
+      </div>
     </div>
   </article>
 </template>
